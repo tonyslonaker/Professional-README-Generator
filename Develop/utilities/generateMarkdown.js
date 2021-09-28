@@ -40,36 +40,36 @@ const createTableOfContents = contentArr => {
 
 };
 
-// creates installation section
-const createInstallation = install => {
+// Install Section
+const createInstall = install => {
   if (install) {
-      return `To use this application, please install: 
+      return `Please install the following application: 
 ${install}`
   } else {
       return '';
   }
 };
-// creates screenshot section
-const createScreenshots = screenshotItem => {
-  let allScreenshots = '';
-  if (screenshotItem) {
-      screenshotItem.forEach(screenshot => {
-      allScreenshots += `![${screenshot.screenshotAlt}](${screenshot.screenshotLink})
+// Create screenshot section
+const createScreenshot = screenshotPic => {
+  let allScreenshot = '';
+  if (screenshotPic) {
+      screenshotPic.forEach(screenshot => {
+      allScreenshot += `![${screenshot.screenshotAlt}](${screenshot.screenshotLink})
 ${screenshot.screenshotDesc}
 `;
   });
-  return `${allScreenshots}`;
+  return `${allScreenshot}`;
   } else {
       return '';
   }
 };
 
-//Built with the following "Technologies" section:
-const createBuiltWith = builtWith =>{
+// Created with the following "Technologies":
+const createTechWith = TechWith =>{
   let allTechnologies = '';
 
-  if (builtWith) {
-      builtWith.forEach(item => {
+  if (TechWith) {
+      techWith.forEach(item => {
           allTechnologies += `
 * ${item}`
       });
@@ -79,43 +79,108 @@ const createBuiltWith = builtWith =>{
   };
 };
 
-// creates usage section
-const createUsage = (usage, screenshots) => {
-  return `${usage} ${createScreenshots(screenshots)}`
+// Create usage and license section
+const createUsage = (usage, screenshot) => {
+  return `${usage} ${createScreenshot(screenshot)}`
 };
-// creates license section
 const createLicense = license => {
   if (license) {
-      return `This application is licensed under the ${license} license.`;
+      return `Application licensed under: ${license}.`;
   } else {
       return '';
   }
 };
 const createTest = test => {
   if (test) {
-      return `To run tests on the application, install
-\`\`\`
-${test}
-\`\`\`
-and run \`npm run test\` from the command line.`
-  } else {
+      return `If test is needed on the application, please install:
+
+      ${test}
+
+  Once installed, open a terminal or command prompt and enter: \`npm run test\`.`
+    } else {
       return '';
   };
 };
-// creates questions section
-const createQuestions = (email, github, repo) => {
+// create "question(s)" section
+const createQuestion = (email, github, repo) => {
   if (email) {
-      return `If you have any questions about the repo, please [open an issue](https://github.com/${github}/${repo}/issues) or contact me via email at ${email}. You can find more of my work on my GitHub, [${github}](https://github.com/${github}/).`
+      return `Question(s) about the repo? Please [open an issue](https://github.com/tonyslonaker/Professional-README-Generator/Issues${github}/${repo}/issues) or contact me via email at ${email}. You can find other projects on my GitHub: [${github}](https://github.com/${github}/).`
   } else {
       return '';
   }
 };
 
+// Create Markdown for README
 
+function generateMarkdown(md) {
+    const { title, github, repo, license } = md
+    let readmeContent = '';
+    const sectionArr = [
+      {
+          header: 'Install',
+          content: createInstall(md.install)
+      },
+      {
+        header: 'Usage',
+        content: createUsage(md.usage)
+      },
+      {
+        header: 'Screenshot', 
+        content: createScreenshot(md.screenshot)
+      },
+      {
+        header: 'Tech Created',
+        content: createTechWith(md['techwith'])
+      },
+      {
+        header: 'License',
+        content: createLicense(license)
+      },
+      {
+        header: 'Contributor', 
+        content: md.contributor
+      },
+      {
+        header: 'Tests',
+        content: createTest(md.tests)
+      },
+      {
+        header: 'Question(s)',
+        content: createQuestion(md.question, github, repo)
+      },
+];
 
+// If content exists, then add section to README
 
-
-
+sectionArr.forEach((sectionItem) => {
+  if (sectionItem.content && sectionItem.header === 'screenshot') {
+    readmeContent += `### ${sectionItem.header}
+    ${sectionItem.content}
+    `
+            } else if (sectionItem.content) {
+            readmeContents += `## ${sectionItem.header}
+    ${sectionItem.content}
+        
+    `;
+            }
+      });
+      return `# ${title}
+      ![GitHub issues](https://img.shields.io/github/issues/tonyslonaker/generateMarkdown?color=red)
+      [![Issues](https://img.shields.io/github/issues/${github}/${
+          repo
+        })](https://github.com/tonyslonaker/Professional-README-Generator/issues${github}/${
+          repo
+        }/issues) [![Issues](https://img.shields.io/github/tonyslonaker/contributors/${
+          github
+        }/${repo})](https://github.com/tonyslonaker/Professional-README-Generator/${github}/${
+          repo
+        }/graphs/contributors) ${addLicenseBadge(license)}
+      ## Description
+      ${createDescription(title, data.description, data.link)}
+      ## Contents
+      ${createTableOfContents(sectionArr)}
+      ${readmeContents}`;
+      }
 
 function generateMarkdown(data) {
   return `# ${data.title}
